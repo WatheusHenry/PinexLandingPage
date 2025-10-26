@@ -169,7 +169,7 @@ export default function Sidebar() {
     setIsDragging(false);
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
 
@@ -178,6 +178,22 @@ export default function Sidebar() {
     if (files.length > 0) {
       files.forEach((file) => processImageFile(file));
       return;
+    }
+
+    // Verificar se tem URL de imagem (arrastada da página)
+    const imageUrl = e.dataTransfer.getData("text/uri-list");
+    if (imageUrl && imageUrl.startsWith("/images/")) {
+      // Converter URL da imagem para blob e depois para file
+      try {
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+        const fileName = imageUrl.split("/").pop() || "image.jpg";
+        const file = new File([blob], fileName, { type: blob.type });
+        processImageFile(file);
+        return;
+      } catch (error) {
+        console.error("Erro ao processar imagem:", error);
+      }
     }
 
     // Se não tem arquivos, verificar se tem texto
