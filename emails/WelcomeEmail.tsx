@@ -26,7 +26,7 @@ export const WelcomeEmail = ({ userEmail }: WelcomeEmailProps) => (
         <Section style={logoSection}>
           <Img
             src="https://pinex.site/logo.png"
-            width="60"
+            width="100"
             height="60"
             alt="Pinex"
             style={logo}
@@ -113,7 +113,6 @@ const logoSection = {
 
 const logo = {
   margin: "0 auto",
-  borderRadius: "12px",
 };
 
 const h1 = {
