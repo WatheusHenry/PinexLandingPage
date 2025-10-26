@@ -148,25 +148,25 @@ export default function Hero() {
       <FloatingImages />
 
       {/* Texto "experimente!" com seta no canto superior direito */}
-      <div className="hidden md:block absolute top-[17rem] right-20 z-10">
+      <div className="hidden md:block absolute top-[17rem] right-20 z-10 select-none">
         <Image
           src="/experimente.png"
           alt="Experimente"
           width={180}
           height={180}
-          className="w-32 h-32 md:w-44 md:h-44 object-contain"
+          className="w-32 h-32 md:w-44 md:h-44 object-contain pointer-events-none"
         />
       </div>
 
       <div className="max-w-lg w-full mt-10 text-center">
         {/* Logo */}
-        <div className="">
+        <div className="select-none">
           <Image
             src="/logo.png"
             alt="ex Logo"
             width={200}
             height={200}
-            className="w-40 h-30 mb-2 mx-auto object-contain"
+            className="w-40 h-30 mb-2 mx-auto object-contain pointer-events-none"
             priority
           />
           <h1 className="text-xl  font-bold text-[#0B0B0B] mb-16">
@@ -184,7 +184,7 @@ export default function Hero() {
               alt="Seta"
               width={60}
               height={60}
-              className="absolute -right-0 top-[-18px] w-12 h-12 md:w-14 md:h-14 object-contain"
+              className="absolute -right-0 top-[-18px] w-12 h-12 md:w-14 md:h-14 object-contain select-none pointer-events-none"
             />
           </div>
 

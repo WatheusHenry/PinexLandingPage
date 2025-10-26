@@ -592,7 +592,7 @@ export default function Sidebar() {
               />
               <p className="text-gray-500 text-sm">Nenhum item salvo ainda</p>
               <p className="text-gray-600 text-xs mt-2">
-                Arraste imagens/textos, cole ou use o botão acima
+                Arraste imagens/textos pra cá
               </p>
             </div>
           ) : (
