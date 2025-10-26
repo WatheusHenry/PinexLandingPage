@@ -429,7 +429,7 @@ export default function Sidebar() {
         initial={false}
         animate={{
           height: isMenuOpen ? "auto" : "46px",
-          right: isSidebarOpen ? "calc(17rem + 2rem)" : "2rem",
+          right: isSidebarOpen ? "calc(15rem + 2rem)" : "1.5rem",
         }}
         transition={{
           height: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
@@ -510,7 +510,7 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <div
-        className={`fixed h-[90vh] w-[280px] rounded-3xl top-12 right-3 bg-[#1A1A1A] shadow-2xl z-50 transition-transform duration-300 ease-in-out select-none ${
+        className={`fixed h-[90vh] w-[250px] rounded-3xl top-12 right-3 bg-[#1A1A1A] shadow-2xl z-50 transition-transform duration-300 ease-in-out select-none ${
           isSidebarOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
