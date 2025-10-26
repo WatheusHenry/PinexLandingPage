@@ -220,9 +220,16 @@ export default function Hero() {
         <div className="absolute bottom-2 left-[44vw] text-gray-400">
           Algum Feedback ou sugestão?
           <br />
-          Fale comigo! <a href="https://x.com/watheushenry" target="_blank" rel="noopener noreferrer" className="text-gray-700">@watheushenry</a>
+          Fale comigo!{" "}
+          <a
+            href="https://x.com/watheushenry"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-700"
+          >
+            @watheushenry
+          </a>
           <br />
-          
         </div>
       </div>
     </div>

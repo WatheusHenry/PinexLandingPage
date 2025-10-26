@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
+import WelcomeEmail from '@/emails/WelcomeEmail'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -14,15 +15,12 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Enviar email de confirmação
+    // Enviar email de confirmação com template
     await resend.emails.send({
-      from: 'onboarding@pinex.site', // Substitua pelo seu domínio verificado
+      from: 'Pinex <onboarding@pinex.site>', // Substitua pelo seu domínio verificado
       to: email,
-      subject: 'Bem-vindo!',
-      html: `
-        <h1>Obrigado por se cadastrar!</h1>
-        <p>Você receberá nossas novidades em breve.</p>
-      `,
+      subject: 'Você está na lista! 🎉 Acesso exclusivo ao Pinex',
+      react: WelcomeEmail({ userEmail: email }),
     })
 
     // Aqui você pode salvar o email em um banco de dados
