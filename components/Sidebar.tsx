@@ -35,6 +35,23 @@ export default function Sidebar() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const clickStartPos = useRef<{ x: number; y: number } | null>(null);
 
+  // Função para enviar logs para a Vercel
+  const logEvent = async (eventName: string, data?: Record<string, any>) => {
+    try {
+      await fetch("/api/log", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          event: eventName,
+          timestamp: new Date().toISOString(),
+          ...data,
+        }),
+      });
+    } catch (error) {
+      console.error("Erro ao enviar log:", error);
+    }
+  };
+
   // Carregar itens salvos do localStorage
   useEffect(() => {
     const stored = localStorage.getItem("savedItems");
@@ -92,6 +109,7 @@ export default function Sidebar() {
   // Adicionar texto
   const addTextItem = (text: string) => {
     setIsAdding(true);
+    logEvent("sidebar_add_text", { textLength: text.length });
 
     const newItem: SavedItem = {
       id: Date.now().toString(),
@@ -127,6 +145,7 @@ export default function Sidebar() {
     }
 
     setIsAdding(true);
+    logEvent("sidebar_add_image", { fileName: file.name, fileSize: file.size });
 
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -215,6 +234,9 @@ export default function Sidebar() {
 
   // Deletar item
   const deleteItem = (id: string) => {
+    const item = savedItems.find((i) => i.id === id);
+    logEvent("sidebar_delete_item", { itemType: item?.type });
+    
     const updatedItems = savedItems.filter((item) => item.id !== id);
     setSavedItems(updatedItems);
     saveToLocalStorage(updatedItems);
@@ -223,6 +245,8 @@ export default function Sidebar() {
   // Abrir imagem como modal flutuante
   const openFloatingImage = (item: SavedItem) => {
     if (item.type !== "image") return;
+
+    logEvent("sidebar_open_floating_image", { imageName: item.name });
 
     const newFloatingImage: FloatingImage = {
       id: `floating-${Date.now()}`,
@@ -286,6 +310,7 @@ export default function Sidebar() {
 
   // Limpar todos os itens
   const clearAllItems = () => {
+    logEvent("sidebar_clear_all", { itemCount: savedItems.length });
     setSavedItems([]);
     localStorage.removeItem("savedItems");
   };
@@ -293,6 +318,7 @@ export default function Sidebar() {
   // Adicionar cor
   const addColorItem = (color: string) => {
     setIsAdding(true);
+    logEvent("sidebar_add_color", { color });
 
     const newItem: SavedItem = {
       id: Date.now().toString(),
@@ -322,6 +348,8 @@ export default function Sidebar() {
 
   // Abrir eyedropper para selecionar cor da tela
   const openEyeDropper = async () => {
+    logEvent("sidebar_open_eyedropper");
+    
     // Verificar se o navegador suporta EyeDropper API
     if (!("EyeDropper" in window)) {
       alert(
@@ -343,6 +371,7 @@ export default function Sidebar() {
 
   // Copiar cor para clipboard
   const copyColorToClipboard = (color: string, itemId: string) => {
+    logEvent("sidebar_copy_color", { color });
     navigator.clipboard.writeText(color);
     setCopiedColorId(itemId);
     setTimeout(() => {
@@ -352,6 +381,8 @@ export default function Sidebar() {
 
   // Colar da área de transferência
   const pasteFromClipboard = async () => {
+    logEvent("sidebar_paste_from_clipboard");
+    
     try {
       const clipboardItems = await navigator.clipboard.read();
 
@@ -392,6 +423,7 @@ export default function Sidebar() {
   // Salvar nota do modal
   const saveNote = () => {
     if (noteText.trim()) {
+      logEvent("sidebar_save_note", { noteLength: noteText.trim().length });
       addTextItem(noteText.trim());
       setNoteText("");
       setIsNoteModalOpen(false);
@@ -402,7 +434,10 @@ export default function Sidebar() {
     {
       icon: "Note.svg",
       label: "Notas",
-      onClick: () => setIsNoteModalOpen(true),
+      onClick: () => {
+        logEvent("sidebar_open_note_modal");
+        setIsNoteModalOpen(true);
+      },
     },
     {
       icon: "ColorPicker.svg",
@@ -412,7 +447,10 @@ export default function Sidebar() {
     {
       icon: "AddFromDevice.svg",
       label: "Adicionar do dispositivo",
-      onClick: () => fileInputRef.current?.click(),
+      onClick: () => {
+        logEvent("sidebar_open_file_picker");
+        fileInputRef.current?.click();
+      },
     },
     {
       icon: "Clipboard.svg",
@@ -476,9 +514,11 @@ export default function Sidebar() {
           <motion.button
             onClick={() => {
               if (!isMenuOpen && !isSidebarOpen) {
+                logEvent("sidebar_open");
                 setIsMenuOpen(true);
                 setIsSidebarOpen(true);
               } else {
+                logEvent("sidebar_close");
                 // Fecha o menu primeiro para evitar animação atravessando a tela
                 setIsMenuOpen(false);
                 setTimeout(() => setIsSidebarOpen(false), 100);
