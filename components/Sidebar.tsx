@@ -23,21 +23,58 @@ export default function Sidebar() {
         initial={false}
         animate={{
           height: isMenuOpen ? "auto" : "46px",
-          right: isSidebarOpen ? "calc(280px + 2rem)" : "2rem",
+          right: isSidebarOpen ? "calc(17rem + 2rem)" : "2rem",
         }}
-        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+        transition={{
+          height: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
+          right: {
+            duration: 0.3,
+            ease: [0.4, 0, 0.2, 1],
+            delay: isMenuOpen ? 0 : 0.2,
+          },
+        }}
         className="fixed top-[50vh] -translate-y-1/2 bg-[#1A1A1A] shadow-lg rounded-xl overflow-hidden z-[60]"
       >
         <div className="flex flex-col gap-3 p-3">
+          <AnimatePresence>
+            {isMenuOpen && (
+              <>
+                {menuButtons.slice(0, -1).map((button, index) => (
+                  <motion.button
+                    key={button.label}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{
+                      duration: 0.2,
+                      delay: index * 0.05,
+                      ease: "easeOut",
+                    }}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    aria-label={button.label}
+                    className="hover:bg-[#202020] rounded-lg p-0 transition-colors"
+                  >
+                    <Image
+                      src={button.icon}
+                      width={22}
+                      height={22}
+                      alt={button.label}
+                    />
+                  </motion.button>
+                ))}
+              </>
+            )}
+          </AnimatePresence>
           <motion.button
             onClick={() => {
               if (!isMenuOpen && !isSidebarOpen) {
                 setIsMenuOpen(true);
                 setIsSidebarOpen(true);
               } else {
-                // Fecha a sidebar primeiro, depois o menu
-                setTimeout(() => setIsMenuOpen(false), 200);
-                setIsSidebarOpen(false);
+                // Fecha o menu primeiro para evitar animação atravessando a tela
+                setIsMenuOpen(false);
+                setTimeout(() => setIsSidebarOpen(false), 100);
               }
             }}
             className="hover:bg-[#202020] rounded-lg p-0 transition-colors"
@@ -61,40 +98,6 @@ export default function Sidebar() {
               />
             </motion.div>
           </motion.button>
-
-          <AnimatePresence>
-            {isMenuOpen && (
-              <>
-                {menuButtons.slice(0, -1).map((button, index) => (
-                  <motion.button
-                    key={button.label}
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{
-                      duration: 0.2,
-                      delay: index * 0.05,
-                      ease: "easeOut",
-                    }}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => {
-                      setIsSidebarOpen(!isSidebarOpen);
-                    }}
-                    aria-label={button.label}
-                    className="hover:bg-[#202020] rounded-lg p-0 transition-colors"
-                  >
-                    <Image
-                      src={button.icon}
-                      width={22}
-                      height={22}
-                      alt={button.label}
-                    />
-                  </motion.button>
-                ))}
-              </>
-            )}
-          </AnimatePresence>
         </div>
       </motion.div>
 
@@ -106,24 +109,6 @@ export default function Sidebar() {
       >
         {/* Conteúdo da sidebar */}
         <div className="w-70 h-[90vh] overflow-y-auto p-6">
-          {/* Botão de fechar */}
-          <button
-            onClick={() => setIsSidebarOpen(false)}
-            className="mb-4 hover:bg-[#202020] rounded-lg p-2 transition-colors"
-            aria-label="Fechar sidebar"
-          >
-            <Image
-              src={"ArrowLeft.svg"}
-              width={22}
-              height={22}
-              alt="Fechar"
-              className="rotate-180"
-            />
-          </button>
-
-          {/* Separador */}
-          <div className="border-t border-[#2A2A2A] my-6"></div>
-
           {/* Conteúdo adicional */}
           <div className="space-y-4">
             <div className="p-4 bg-[#252525] rounded-lg">
