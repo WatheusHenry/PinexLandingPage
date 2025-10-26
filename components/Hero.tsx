@@ -169,8 +169,12 @@ export default function Hero() {
             className="w-40 h-30 mb-2 mx-auto object-contain pointer-events-none"
             priority
           />
-          <h1 className="text-xl  font-bold text-[#0B0B0B] mb-16">
+          <h1 className="text-xl  font-bold text-[#0B0B0B] mb-2">
             Salve o que te inspira.
+          </h1>
+
+          <h1 className="text-md  font-semibold text-[#646464] mb-16">
+            A Pinex é uma extensão que te auxilia a salvar ideias e referências, removendo o atrito de ficar navegando entre abas.
           </h1>
         </div>
 
