@@ -5,7 +5,8 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Sidebar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const menuButtons = [
     { icon: "Note.svg", label: "Notas" },
@@ -18,26 +19,38 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Menu expansível */}
       <motion.div
         initial={false}
         animate={{
-          height: isOpen ? "auto" : "46px",
+          height: isMenuOpen ? "auto" : "46px",
+          right: isSidebarOpen ? "calc(280px + 2rem)" : "2rem",
         }}
         transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-        className="fixed right-[2rem] top-[50vh] -translate-y-1/2 bg-[#1A1A1A] shadow-lg rounded-xl overflow-hidden z-[60]"
+        className="fixed top-[50vh] -translate-y-1/2 bg-[#1A1A1A] shadow-lg rounded-xl overflow-hidden z-[60]"
       >
         <div className="flex flex-col gap-3 p-3">
-          {/* Botão de toggle (sempre visível) */}
           <motion.button
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => {
+              if (!isMenuOpen && !isSidebarOpen) {
+                setIsMenuOpen(true);
+                setIsSidebarOpen(true);
+              } else {
+                // Fecha a sidebar primeiro, depois o menu
+                setTimeout(() => setIsMenuOpen(false), 200);
+                setIsSidebarOpen(false);
+              }
+            }}
             className="hover:bg-[#202020] rounded-lg p-0 transition-colors"
-            aria-label={isOpen ? "Fechar menu" : "Abrir menu"}
+            aria-label={
+              isSidebarOpen ? "Fechar sidebar e menu" : "Abrir menu e sidebar"
+            }
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             <motion.div
-              animate={{ rotate: isOpen ? 180 : 0 }}
+              animate={{
+                rotate: isMenuOpen ? 180 : 0,
+              }}
               transition={{ duration: 0.3 }}
             >
               <Image
@@ -49,9 +62,8 @@ export default function Sidebar() {
             </motion.div>
           </motion.button>
 
-          {/* Itens do menu (aparecem quando expandido) */}
           <AnimatePresence>
-            {isOpen && (
+            {isMenuOpen && (
               <>
                 {menuButtons.slice(0, -1).map((button, index) => (
                   <motion.button
@@ -67,8 +79,7 @@ export default function Sidebar() {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => {
-                      // Adicione aqui a lógica de cada botão
-                      console.log(`Clicou em: ${button.label}`);
+                      setIsSidebarOpen(!isSidebarOpen);
                     }}
                     aria-label={button.label}
                     className="hover:bg-[#202020] rounded-lg p-0 transition-colors"
@@ -89,12 +100,27 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <div
-        className={`fixed h-[90vh] rounded-3xl top-12 right-3 bg-[#1A1A1A] shadow-2xl z-50 transition-transform duration-300 ease-in-out ${
-          isOpen ? "translate-x-0" : "translate-x-full"
+        className={`fixed h-[90vh] w-[280px] rounded-3xl top-12 right-3 bg-[#1A1A1A] shadow-2xl z-50 transition-transform duration-300 ease-in-out ${
+          isSidebarOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         {/* Conteúdo da sidebar */}
         <div className="w-70 h-[90vh] overflow-y-auto p-6">
+          {/* Botão de fechar */}
+          <button
+            onClick={() => setIsSidebarOpen(false)}
+            className="mb-4 hover:bg-[#202020] rounded-lg p-2 transition-colors"
+            aria-label="Fechar sidebar"
+          >
+            <Image
+              src={"ArrowLeft.svg"}
+              width={22}
+              height={22}
+              alt="Fechar"
+              className="rotate-180"
+            />
+          </button>
+
           {/* Separador */}
           <div className="border-t border-[#2A2A2A] my-6"></div>
 
