@@ -6,7 +6,9 @@ export default function Home() {
     <main className="min-h-screen">
       <Analytics />
       <Hero />
-      <Sidebar />
+      <div className="hidden md:block">
+        <Sidebar />
+      </div>
     </main>
   );
 }

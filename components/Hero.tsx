@@ -76,7 +76,7 @@ function FloatingImages() {
       {floatingImages.map((img, index) => (
         <div
           key={index}
-          className="absolute cursor-grab active:cursor-grabbing hover:scale-105 transition-transform"
+          className="hidden md:block absolute cursor-grab active:cursor-grabbing hover:scale-105 transition-transform"
           draggable
           onDragStart={(e) => {
             e.dataTransfer.setData("text/plain", img.src);
@@ -148,7 +148,7 @@ export default function Hero() {
       <FloatingImages />
 
       {/* Texto "experimente!" com seta no canto superior direito */}
-      <div className="absolute top-[17rem] right-20 z-10">
+      <div className="hidden md:block absolute top-[17rem] right-20 z-10">
         <Image
           src="/experimente.png"
           alt="Experimente"
@@ -217,19 +217,21 @@ export default function Hero() {
             </p>
           )}
         </form>
-        <div className="absolute bottom-2 left-[44vw] text-gray-400">
-          Algum Feedback ou sugestão?
-          <br />
-          Fale comigo!{" "}
-          <a
-            href="https://x.com/watheushenry"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gray-700"
-          >
-            @watheushenry
-          </a>
-          <br />
+        <div className="absolute bottom-2 left-0 right-0 text-gray-400 w-full flex justify-center">
+          <div className="text-center">
+            Algum Feedback ou sugestão?
+            <br />
+            Fale comigo!{" "}
+            <a
+              href="https://x.com/watheushenry"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-700"
+            >
+              @watheushenry
+            </a>
+            <br />
+          </div>
         </div>
       </div>
     </div>
