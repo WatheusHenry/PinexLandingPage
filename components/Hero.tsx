@@ -79,7 +79,9 @@ function FloatingImages() {
           className="absolute cursor-grab active:cursor-grabbing hover:scale-105 transition-transform"
           draggable
           onDragStart={(e) => {
+            e.dataTransfer.setData("text/plain", img.src);
             e.dataTransfer.setData("text/uri-list", img.src);
+            e.dataTransfer.setData("image-url", img.src);
             e.dataTransfer.effectAllowed = "copy";
           }}
           style={{

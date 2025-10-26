@@ -180,10 +180,15 @@ export default function Sidebar() {
       return;
     }
 
-    // Verificar se tem URL de imagem (arrastada da página)
-    const imageUrl = e.dataTransfer.getData("text/uri-list");
-    if (imageUrl && imageUrl.startsWith("/images/")) {
-      // Converter URL da imagem para blob e depois para file
+    // Tentar pegar URL de imagem de diferentes formas
+    let imageUrl = 
+      e.dataTransfer.getData("image-url") ||
+      e.dataTransfer.getData("text/uri-list") ||
+      e.dataTransfer.getData("text/plain") ||
+      e.dataTransfer.getData("text");
+
+    // Se for uma URL de imagem da nossa pasta
+    if (imageUrl && imageUrl.includes("/images/")) {
       try {
         const response = await fetch(imageUrl);
         const blob = await response.blob();
@@ -196,10 +201,9 @@ export default function Sidebar() {
       }
     }
 
-    // Se não tem arquivos, verificar se tem texto
-    const text = e.dataTransfer.getData("text");
-    if (text && text.trim()) {
-      addTextItem(text.trim());
+    // Se for texto normal
+    if (imageUrl && imageUrl.trim() && !imageUrl.includes("/images/")) {
+      addTextItem(imageUrl.trim());
     }
   };
 
