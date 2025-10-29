@@ -31,9 +31,21 @@ export default function Sidebar() {
   const [copiedColorId, setCopiedColorId] = useState<string | null>(null);
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
   const [noteText, setNoteText] = useState("");
+  const [hasAccess, setHasAccess] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const clickStartPos = useRef<{ x: number; y: number } | null>(null);
+
+  // Função para mostrar toast
+  const showToastMessage = (message: string) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+    }, 3000);
+  };
 
   // Função para enviar logs para a Vercel
   const logEvent = async (eventName: string, data?: Record<string, any>) => {
@@ -51,6 +63,12 @@ export default function Sidebar() {
       console.error("Erro ao enviar log:", error);
     }
   };
+
+  // Verificar se o usuário tem acesso (enviou o email)
+  useEffect(() => {
+    const hasSubscribed = localStorage.getItem("hasSubscribed");
+    setHasAccess(hasSubscribed === "true");
+  }, []);
 
   // Carregar itens salvos do localStorage
   useEffect(() => {
@@ -140,7 +158,7 @@ export default function Sidebar() {
   // Processar arquivo de imagem
   const processImageFile = (file: File) => {
     if (!file.type.startsWith("image/")) {
-      alert("Por favor, adicione apenas arquivos de imagem");
+      showToastMessage("Por favor, adicione apenas arquivos de imagem");
       return;
     }
 
@@ -200,7 +218,7 @@ export default function Sidebar() {
     }
 
     // Tentar pegar URL de imagem de diferentes formas
-    let imageUrl = 
+    let imageUrl =
       e.dataTransfer.getData("image-url") ||
       e.dataTransfer.getData("text/uri-list") ||
       e.dataTransfer.getData("text/plain") ||
@@ -236,7 +254,7 @@ export default function Sidebar() {
   const deleteItem = (id: string) => {
     const item = savedItems.find((i) => i.id === id);
     logEvent("sidebar_delete_item", { itemType: item?.type });
-    
+
     const updatedItems = savedItems.filter((item) => item.id !== id);
     setSavedItems(updatedItems);
     saveToLocalStorage(updatedItems);
@@ -349,11 +367,11 @@ export default function Sidebar() {
   // Abrir eyedropper para selecionar cor da tela
   const openEyeDropper = async () => {
     logEvent("sidebar_open_eyedropper");
-    
+
     // Verificar se o navegador suporta EyeDropper API
     if (!("EyeDropper" in window)) {
-      alert(
-        "Seu navegador não suporta o seletor de cores da tela. Use Chrome, Edge ou Opera."
+      showToastMessage(
+        "Seu navegador não suporta o seletor de cores. Use Chrome, Edge ou Opera."
       );
       return;
     }
@@ -382,7 +400,7 @@ export default function Sidebar() {
   // Colar da área de transferência
   const pasteFromClipboard = async () => {
     logEvent("sidebar_paste_from_clipboard");
-    
+
     try {
       const clipboardItems = await navigator.clipboard.read();
 
@@ -413,7 +431,7 @@ export default function Sidebar() {
           addTextItem(text.trim());
         }
       } catch (error) {
-        alert(
+        showToastMessage(
           "Não foi possível acessar a área de transferência. Use Ctrl+V para colar."
         );
       }
@@ -513,6 +531,15 @@ export default function Sidebar() {
           </AnimatePresence>
           <motion.button
             onClick={() => {
+              // Verificar se o usuário tem acesso
+              if (!hasAccess) {
+                showToastMessage(
+                  "Cadastre seu email primeiro para poder experimentar!"
+                );
+                logEvent("sidebar_access_denied");
+                return;
+              }
+
               if (!isMenuOpen && !isSidebarOpen) {
                 logEvent("sidebar_open");
                 setIsMenuOpen(true);
@@ -764,6 +791,23 @@ export default function Sidebar() {
                   Ctrl+Enter para salvar
                 </p>
               </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Toast */}
+      <AnimatePresence>
+        {showToast && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.9 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="fixed top-[65vh] left-0 right-0 z-[200] pointer-events-none flex justify-center px-4"
+          >
+            <div className="bg-[#1A1A1A] text-white px-6 py-4 rounded-xl shadow-2xl border border-gray-700/50 max-w-md w-full">
+              <p className="text-sm text-center">{toastMessage}</p>
             </div>
           </motion.div>
         )}

@@ -132,6 +132,8 @@ export default function Hero() {
         setStatus("success");
         setMessage("Email cadastrado com sucesso! Olhe sua caixa de entrada");
         setEmail("");
+        // Salvar no localStorage que o usuário enviou o email
+        localStorage.setItem("hasSubscribed", "true");
       } else {
         setStatus("error");
         setMessage(data.error || "Erro ao cadastrar email");
@@ -174,7 +176,8 @@ export default function Hero() {
           </h1>
 
           <h1 className="text-md  font-semibold text-[#646464] mb-16">
-            A Pinex é uma extensão que te auxilia a salvar ideias e referências, removendo o atrito de ficar navegando entre abas.
+            A Pinex é uma extensão que te auxilia a salvar ideias e referências,
+            removendo o atrito de ficar navegando entre abas.
           </h1>
         </div>
 
