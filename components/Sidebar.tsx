@@ -31,7 +31,6 @@ export default function Sidebar() {
   const [copiedColorId, setCopiedColorId] = useState<string | null>(null);
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
   const [noteText, setNoteText] = useState("");
-  const [hasAccess, setHasAccess] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -63,12 +62,6 @@ export default function Sidebar() {
       console.error("Erro ao enviar log:", error);
     }
   };
-
-  // Verificar se o usuário tem acesso (enviou o email)
-  useEffect(() => {
-    const hasSubscribed = localStorage.getItem("hasSubscribed");
-    setHasAccess(hasSubscribed === "true");
-  }, []);
 
   // Carregar itens salvos do localStorage
   useEffect(() => {
@@ -531,15 +524,6 @@ export default function Sidebar() {
           </AnimatePresence>
           <motion.button
             onClick={() => {
-              // Verificar se o usuário tem acesso
-              if (!hasAccess) {
-                showToastMessage(
-                  "Cadastre seu email primeiro para poder experimentar!"
-                );
-                logEvent("sidebar_access_denied");
-                return;
-              }
-
               if (!isMenuOpen && !isSidebarOpen) {
                 logEvent("sidebar_open");
                 setIsMenuOpen(true);
@@ -577,9 +561,8 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <div
-        className={`fixed h-[90vh] w-[250px] rounded-3xl top-12 right-3 bg-[#1A1A1A] shadow-2xl z-50 transition-transform duration-300 ease-in-out select-none ${
-          isSidebarOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed h-[90vh] w-[250px] rounded-3xl top-12 right-3 bg-[#1A1A1A] shadow-2xl z-50 transition-transform duration-300 ease-in-out select-none ${isSidebarOpen ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         {/* Input oculto para seleção de arquivos */}
         <input
@@ -597,9 +580,8 @@ export default function Sidebar() {
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          className={`w-full h-full overflow-y-auto p-4 transition-all duration-300 scrollbar-hide ${
-            isDragging ? "bg-blue-500/5 scale-[0.98]" : ""
-          } ${isAdding ? "bg-green-500/5" : ""}`}
+          className={`w-full h-full overflow-y-auto p-4 transition-all duration-300 scrollbar-hide ${isDragging ? "bg-blue-500/5 scale-[0.98]" : ""
+            } ${isAdding ? "bg-green-500/5" : ""}`}
           style={{
             scrollbarWidth: "none",
             msOverflowStyle: "none",
@@ -844,9 +826,8 @@ export default function Sidebar() {
                 {/* Barra de título */}
                 <div className="bg-[#252525] px-3 py-2 flex items-center justify-between cursor-move">
                   <p
-                    className={`text-white text-sm truncate ${
-                      floatingImg.isMinimized ? "max-w-[60px]" : "max-w-[300px]"
-                    }`}
+                    className={`text-white text-sm truncate ${floatingImg.isMinimized ? "max-w-[60px]" : "max-w-[300px]"
+                      }`}
                   >
                     {floatingImg.name}
                   </p>
